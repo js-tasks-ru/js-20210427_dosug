@@ -5,27 +5,15 @@
  * @returns {string[]}
  */
 export function sortStrings(arr, param = 'asc') {
-  if (param === 'asc') {
-    return arr.slice().sort((a, b) => {
-
-      // Проверка на идентичность строк в одном регистре для
-      // выставления вперёд строк с заглавной.
-      if (a.toUpperCase() === b.toUpperCase() &&
-          a.localeCompare(b) === 1
-        ) {
-          return -1;
-      }
-
-      return a.localeCompare(b);
-    });
-  }
+  const newArr = [...arr];
+  
+  newArr.sort((a, b) => {
+    return a.localeCompare(b, ['ru', 'en'], { caseFirst: 'upper' });
+  });
 
   if (param === 'desc') {
-    return arr.slice().sort((a, b) => {
-
-      // нет необходимости делать туже проверку, т.к.
-      // системно прописные и так тяжелее заглавных.
-      return b.localeCompare(a);
-    });
+    newArr.reverse();
   }
+
+  return newArr;
 }
