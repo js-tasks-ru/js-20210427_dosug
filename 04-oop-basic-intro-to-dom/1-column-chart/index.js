@@ -19,17 +19,6 @@ export default class ColumnChart {
         this.oData.value :
         '';
 
-    // let charts = '';
-
-    // if (this.oData && this.oData.data) {
-    //   this.oData.data.forEach(value => {
-    //     charts += `
-    //     <div style="--value: ${String(Math.floor(this.scale * value))}" 
-    //       data-tooltip="${(value / this.maxValue * 100).toFixed(0) + '%'}"></div>
-    //     `
-    //   });
-    // }
-
     element.innerHTML = `
     <div class="column-chart ${isEmptyData && 'column-chart_loading'}">
       <div class="column-chart__title">${title}
