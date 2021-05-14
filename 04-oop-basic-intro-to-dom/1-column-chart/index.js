@@ -1,8 +1,19 @@
 export default class ColumnChart {
-  constructor(oData) {
-    this.oData = oData;
+  constructor({
+    data = [],
+    link = '',
+    label = '',
+    value = 0,
+    formatHeading = null
+  } = {}) {
+    this.data = data;
+    this.link = link;
+    this.label = label;
+    this.value = value;
+    this.formatHeading = formatHeading;
+
     this.chartHeight = 50;
-    this.maxValue = oData && oData.data ? Math.max(...oData.data) : this.chartHeight;
+    this.maxValue = data.length ? Math.max(...data) : this.chartHeight;
     this.scale = this.chartHeight / this.maxValue;
 
     this.render();
@@ -10,14 +21,12 @@ export default class ColumnChart {
 
   render() {
     const element = document.createElement('div');
-    const isEmptyData = !this.oData || !this.oData.data || !this.oData.data.length;
-    const title = this.oData ? 'Total ' + this.oData.label : '';
-    const link = this.oData && this.oData.link ? `<a class="column-chart__link" href="${this.oData.link}">View all</a>` : '';
-    const header = this.oData && this.oData.formatHeading ? 
-      this.oData.formatHeading(this.oData.value) : 
-      this.oData ? 
-        this.oData.value :
-        '';
+    const isEmptyData = !this.data.length;
+    const title = this.label ? 'Total ' + this.label : '';
+    const link = this.link ? `<a class="column-chart__link" href="${this.link}">View all</a>` : '';
+    const header = this.formatHeading ? 
+      this.formatHeading(this.value) : 
+      this.value || '';
 
     element.innerHTML = `
     <div class="column-chart ${isEmptyData && 'column-chart_loading'}">
@@ -38,9 +47,9 @@ export default class ColumnChart {
   
   update(data) {
     const body = this.element.querySelector('.column-chart__chart');
-    data.forEach(item => {this.oData.data.unshift(item)});
+    data.forEach(item => {this.data.unshift(item)});
     
-    this.maxValue = this.oData && this.oData.data ? Math.max(...this.oData.data) : this.chartHeight;
+    this.maxValue = this.data.length ? Math.max(...this.data) : this.chartHeight;
     this.scale = this.chartHeight / this.maxValue;
 
     body.innerHTML = `
@@ -51,14 +60,12 @@ export default class ColumnChart {
   getCharts() {
     let charts = '';
 
-    if (this.oData && this.oData.data) {
-      this.oData.data.forEach(value => {
-        charts += `
-        <div style="--value: ${String(Math.floor(this.scale * value))}" 
-             data-tooltip="${(value / this.maxValue * 100).toFixed(0) + '%'}"></div>
-        `
-      });
-    }
+    this.data.forEach(value => {
+      charts += `
+      <div style="--value: ${String(Math.floor(this.scale * value))}" 
+            data-tooltip="${(value / this.maxValue * 100).toFixed(0) + '%'}"></div>
+      `
+    });
 
     return charts;
   }
