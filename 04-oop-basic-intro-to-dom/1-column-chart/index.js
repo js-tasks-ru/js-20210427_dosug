@@ -19,28 +19,36 @@ export default class ColumnChart {
     this.render();
   }
 
-  render() {
-    const element = document.createElement('div');
-    const isEmptyData = !this.data.length;
-    const title = this.label ? 'Total ' + this.label : '';
-    const link = this.link ? `<a class="column-chart__link" href="${this.link}">View all</a>` : '';
-    const header = this.formatHeading ? 
+  getLink() {
+    if (!this.link) return '';
+
+    return `
+      <a class="column-chart__link" href="${this.link}">View all</a>
+    `;
+  }
+
+  getHeader() {
+    return this.formatHeading ? 
       this.formatHeading(this.value) : 
       this.value || '';
+  }
+
+  render() {
+    const element = document.createElement('div');
 
     element.innerHTML = `
-    <div class="column-chart ${isEmptyData && 'column-chart_loading'}">
-      <div class="column-chart__title">${title}
-        ${link}
-      </div>
-      <div class="column-chart__container">
-        <div data-element="header" class="column-chart__header">${header}</div>
-        <div data-element="body" class="column-chart__chart">
-          ${this.getCharts()}
+      <div class="column-chart ${!this.data.length && 'column-chart_loading'}">
+        <div class="column-chart__title">${this.label ? 'Total ' + this.label : ''}
+          ${this.getLink()}
+        </div>
+        <div class="column-chart__container">
+          <div data-element="header" class="column-chart__header">${this.getHeader()}</div>
+          <div data-element="body" class="column-chart__chart">
+            ${this.getCharts()}
+          </div>
         </div>
       </div>
-    </div>
-    `
+    `;
 
     this.element = element.firstElementChild;
   }
